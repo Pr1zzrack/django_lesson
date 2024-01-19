@@ -1,0 +1,54 @@
+Файл admin.py в Django используется для настройки административного интерфейса, который предоставляется Django Admin. 
+Этот интерфейс облегчает управление данными в вашем приложении, предоставляя вам готовые инструменты для просмотра, 
+добавления, изменения и удаления объектов из базы данных.
+
+#################################################Пример admin.py:#############################################
+
+Code:
+	from django.contrib import admin
+	from .models import MyModel
+
+	@admin.register(MyModel)
+	class MyModelAdmin(admin.ModelAdmin):
+    		list_display = ('field1', 'field2', 'field3')
+    		search_fields = ('field1', 'field2')
+    		list_filter = ('field3',)
+
+	Рассмотрим несколько ключевых аспектов:
+
+		@admin.register: Этот декоратор используется для регистрации модели в административном интерфейсе. Он делает то же самое, что и admin.site.register(MyModel, MyModelAdmin), но в более удобной форме.
+
+		MyModelAdmin: Это класс, который определяет настройки для отображения модели в административном интерфейсе.
+
+		list_display: Список полей, которые будут отображаться в списке объектов модели в административном интерфейсе.
+
+		search_fields: Поля, по которым можно выполнять поиск объектов.
+
+		list_filter: Поля, по которым можно фильтровать объекты.
+
+	Это всего лишь пример. В файле admin.py вы можете определить не только административные настройки, но и добавлять свои собственные представления и функциональность.
+
+
+##########################################Пример с добавлением своего представления:##########################
+
+from django.contrib import admin
+from .models import MyModel
+
+class MyModelAdmin(admin.ModelAdmin):
+    # ... (другие настройки)
+
+    def custom_view(self, request):
+        # Ваш код для кастомного представления
+        return self.render_change_form(request, context={}, add=False, change=False, obj=None)
+
+@admin.register(MyModel)
+class MyModelAdmin(admin.ModelAdmin):
+    list_display = ('field1', 'field2', 'field3')
+    search_fields = ('field1', 'field2')
+    list_filter = ('field3',)
+    actions = ['custom_action']
+
+    def custom_action(self, request, queryset):
+        # Ваш код для кастомного действия
+        pass
+    custom_action.short_description = 'Выполнить кастомное действие'
